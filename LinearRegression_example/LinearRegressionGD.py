@@ -48,4 +48,5 @@ class LinearRegressionGD:
         '''
         function for prediction
         '''
+
         return self.net_input(X)
