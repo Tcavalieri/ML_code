@@ -5,6 +5,6 @@ FeaturesExtraction.py and LinearRegressionGD.py
 
 the main file for executing the pipeline is named program.py
 
-I also contain a set of data for testing purposes.
+It also contain a set of data for testing purposes.
 
 (to be uptdated)
