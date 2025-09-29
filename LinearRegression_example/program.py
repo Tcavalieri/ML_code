@@ -1,5 +1,5 @@
 from FeaturesExtraction import FeaturesExtraction
-from Model import LinearRegressionGD
+from LinearRegressionGD import LinearRegressionGD
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -51,4 +51,5 @@ plt.xlabel('true values')
 plt.ylabel('predicted values')
 plt.grid()
 plt.show()
+
 
