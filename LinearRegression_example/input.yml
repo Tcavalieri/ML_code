@@ -1,0 +1,21 @@
+# INPUT FILE
+
+datafile_name: data.csv
+
+features: 
+  - BET-sa-(m2/g)
+  - pore-volume-(cm3/g)
+  - T-(K)
+  - P-(bar)
+
+label: CO2-uptake-(mmol/g)
+
+model: linear_regression
+
+trainer: gradient_descent
+
+eta: 0.00000001
+
+n_iter: 60
+
+random_state: 234
