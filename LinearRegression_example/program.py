@@ -16,14 +16,14 @@ features_extract.data_analysis() # storing information of the database
 [labs, feats] = features_extract.feature_extraction(inp_read.content['label'],inp_read.content['features']) # extraction of features and labels
 
 # Model
-lr_model1 = LinearRegression('linear regression',0,0) # instance of a linear regression model
-lr_model2 = LinearRegression('linear regression',0,0) # other instance only for demonstartion purposes
+lr_model1 = LinearRegression(inp_read.content['model'],feats,inp_read.content['random_state']) # instance of a linear regression model
+lr_model2 = LinearRegression(inp_read.content['model'],feats,inp_read.content['random_state']) # other instance only for demonstartion purposes
 
 # Training
-trainer1 = Trainer(lr_model1,inp_read.content['eta'],inp_read.content['n_iter'],inp_read.content['random_state']) # instance of training class
-trainer2 = Trainer(lr_model2,inp_read.content['eta'],inp_read.content['n_iter'],inp_read.content['random_state']) # other instance only for demonstartion purposes
+trainer1 = Trainer(inp_read.content['trainer'],lr_model1,inp_read.content['eta'],inp_read.content['n_iter']) # instance of training class
+trainer2 = Trainer(inp_read.content['trainer'],lr_model2,inp_read.content['eta'],inp_read.content['n_iter']) # other instance only for demonstartion purposes
 
-train1 = trainer1.sgd_optim(feats,labs) # stochastic gradient descent training
+train1 = trainer1.training(feats,labs) # stochastic gradient descent training
 train2 = trainer2.gd_optim(feats, labs) # gradient descent training
 
 # Plot of the training
@@ -50,4 +50,5 @@ plt.xlabel('true values')
 plt.ylabel('predicted values')
 plt.grid()
 plt.show()
+
 
