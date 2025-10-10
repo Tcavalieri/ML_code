@@ -5,7 +5,7 @@ import torch
 
 class FeaturesExtraction:
     '''
-    Class for reading and extracting features from raw datas. The methods
+    Class for reading and extracting features from raw data. The methods
     of this class only read *.csv (comma-separated Values) files for now.
     '''
 
@@ -81,3 +81,4 @@ class FeaturesExtraction:
 
 
         
+
