@@ -22,7 +22,6 @@ class Trainer:
         self.model_obj = model_obj
         self.eta = eta
         self.n_iter = n_iter
-        self.random_state = random_state
 
     def optim_selection(self):
         '''
@@ -88,3 +87,4 @@ class Trainer:
             self.losses.append(loss)
 
         return self
+
