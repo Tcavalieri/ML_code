@@ -4,6 +4,7 @@ from Trainer import Trainer
 import numpy as np
 import matplotlib.pyplot as plt
 from InputReader import InputReader
+from Logger import Logger
 
 
 # Reading the input file (*.yml file)
@@ -23,8 +24,15 @@ lr_model2 = LinearRegression(inp_read.content['model'],feats,inp_read.content['r
 trainer1 = Trainer(inp_read.content['trainer'],lr_model1,inp_read.content['eta'],inp_read.content['n_iter']) # instance of training class
 trainer2 = Trainer(inp_read.content['trainer'],lr_model2,inp_read.content['eta'],inp_read.content['n_iter']) # other instance only for demonstartion purposes
 
+# First part of the log file
+log = Logger(lr_model1,trainer1)
+log.log('w')
+
 train1 = trainer1.training(feats,labs) # stochastic gradient descent training
 train2 = trainer2.gd_optim(feats, labs) # gradient descent training
+
+# Second part of the log file
+log.log('a')
 
 # Plot of the training
 
@@ -50,5 +58,6 @@ plt.xlabel('true values')
 plt.ylabel('predicted values')
 plt.grid()
 plt.show()
+
 
 
