@@ -6,13 +6,18 @@ from sklearn.model_selection import train_test_split ##fucntion required to spli
 class FeaturesExtraction:
     '''
     Class for reading and extracting features from raw datas. The methods
+import torch
+
+class FeaturesExtraction:
+    '''
+    Class for reading and extracting features from raw data. The methods
     of this class only read *.csv (comma-separated Values) files for now.
     '''
 
     def __init__(self,name):
         self.name = name # name of the file
         self.data = 0 # initialisation of the number of total points
-        self.tot_missing = 0
+        self.tot_missing = 0 # initialisation for the number of missing values
         self.uniques = {}
         self.missing = {}
     
@@ -25,11 +30,10 @@ class FeaturesExtraction:
     
     def data_analysis(self):
         '''
-        optional function to analyse the data
+        Function to analyse the data and storng important information in the instance (self.data)
         '''
         raw_data = self.data_reading()
         cols = raw_data.columns
-        print(cols)
         miss = 0
         for col in cols:
             self.uniques[col] = len(raw_data[col].unique())
@@ -48,7 +52,7 @@ class FeaturesExtraction:
 
     def data_preproc(self,col):
         '''
-        Auxiliary function to manipulate some data
+        Auxiliary function to manipulate some data (optional and not used for now)
         '''
         data_new = self.data_miss()
         data_new[col] = data_new[col].apply(lambda x: x/1000)
@@ -60,9 +64,14 @@ class FeaturesExtraction:
     
         '''
         function to extract features and labels from the data.
-        variables:
-        label_name (str): name of the label column in the df
+        Parameters
+        ----------
+        label_name (str): name of the label column in the dataframe
         names (list): list of strings  for the features 
+        Return
+        ------
+        labels (torch tensor): dim = nx1 with n number of labled points
+        features (torch tensor): dim = nxm with n number of points and m number of features
         '''
         data_df = self.data_miss()
         #if check == True:
@@ -80,6 +89,16 @@ class FeaturesExtraction:
         #features_full = np.array((dim[0],dim[1])) --- original line
         for i in range(len(names)):
             features_full[:,i] = data_df[names[i]]
+        data_df = self.data_miss() # replace missing values
+
+        dim = [self.data,len(names)] # extracting dimension of the pointsxfeatures tensor
+        labels = torch.empty((dim[0],1),requires_grad=False) # initialise the labels tensor 
+        labels[:,0] = torch.tensor(data_df[label_name].values)
+        
+        features = torch.empty((dim[0],dim[1]),requires_grad=False) # initialise the pointsxfeatures tensor 
+        for i in range(dim[1]):
+            data_df[names[i]] = data_df[names[i]].apply(lambda x: float(x))
+            features[:,i] = torch.tensor(data_df[names[i]].values).double() # .double method used for compatibility of dtype
         
         #return labels, features
 
@@ -130,3 +149,5 @@ if __name__ == '__main__':
 
 ##evaluation of the printed arrays showed the split was 50/50 despite the test_split=0.2 argument.
 ##however, the core function of randomly splitting the data was succesful 
+        
+
