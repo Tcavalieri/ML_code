@@ -25,17 +25,20 @@ class LinearRegression(Models):
     Child Class for a linear regression model 
     '''
     
-    def __init__(self, name, w, b):
+    def __init__(self, name, X, seed):
         '''
         Parameters
         ----------
         name (str): name of the model 
-        w (torch tensor): dim = mx1 with m number of features. weights tensor
-        b (torch tensor): dim = 1x1 is the bias tensor (intercept)
+        X (torch tensor): dim = nxm with n number of points (rows) and m number of features (columns)
+        seed (int): seed for random number generator for initial values of weights and bias
         '''
         super().__init__(name) # inheriting all the Parent Class methods
-        self.w = w
-        self.b = b
+        torch.manual_seed(seed) # setting the random number generator with the seed for reproducibility
+
+        self.weights = torch.rand((X.shape[1],1),requires_grad=True) # initial values of weights w
+        self.bias = torch.rand((1,1),requires_grad=True) # initial value of the coefficient b
+        self.parameters = [self.weights,self.bias]
     
     def net_input(self,X):
         '''
@@ -58,3 +61,4 @@ class LinearRegression(Models):
         prediction = self.net_input(X)
         return prediction
     
+

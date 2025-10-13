@@ -12,10 +12,11 @@ label: CO2-uptake-(mmol/g)
 
 model: linear_regression
 
-trainer: gradient_descent
+trainer: SGD
 
 eta: 0.00000001
 
 n_iter: 60
+
 
 random_state: 234
