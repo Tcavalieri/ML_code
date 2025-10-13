@@ -48,7 +48,7 @@ class LinearRegression(Models):
         X (torch tensor): dim = nxm with n number of points (rows) and m number of features (columns)
         '''
 
-        return torch.matmul(X,self.w) + self.b
+        return torch.matmul(X,self.weights) + self.bias
     
     def predict(self,X):
         '''
@@ -61,4 +61,5 @@ class LinearRegression(Models):
         prediction = self.net_input(X)
         return prediction
     
+
 
