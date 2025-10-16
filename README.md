@@ -14,7 +14,8 @@ It also contain in the same directory a set of data for testing purposes and an 
 
 As chematic of the ML code architecture is presented below:
 
-<img width="1207" height="631" alt="image" src="https://github.com/user-attachments/assets/ca13550a-0a08-4a79-bc00-daf9f5a6d89f" />
+<img width="1256" height="661" alt="image" src="https://github.com/user-attachments/assets/95d8b1c9-8887-45b6-b70c-74c459128865" />
+
 
 
 (to be uptdated)
