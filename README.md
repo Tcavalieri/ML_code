@@ -12,4 +12,9 @@ The Python files are in the LinearRegression_example:
 
 It also contain in the same directory a set of data for testing purposes and an input file.
 
+As chematic of the ML code architecture is presented below:
+
+<img width="1207" height="631" alt="image" src="https://github.com/user-attachments/assets/ca13550a-0a08-4a79-bc00-daf9f5a6d89f" />
+
+
 (to be uptdated)
