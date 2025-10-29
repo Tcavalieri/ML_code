@@ -18,4 +18,5 @@ As chematic of the ML code architecture is presented below:
 
 
 
+A *.pptx file about the basics of an artificial neural network, including some symbols and math is available.
 (to be uptdated)
