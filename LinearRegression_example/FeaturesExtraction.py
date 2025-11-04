@@ -2,7 +2,7 @@ import sklearn
 import pandas as pd
 import numpy as np
 import torch
-from DataSplitter import split_data #import the new splitting function
+from datasplitter import split_data #import the new splitting function
 from sklearn.model_selection import KFold 
 
 class FeaturesExtraction:
