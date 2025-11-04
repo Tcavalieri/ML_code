@@ -12,4 +12,11 @@ The Python files are in the LinearRegression_example:
 
 It also contain in the same directory a set of data for testing purposes and an input file.
 
+As chematic of the ML code architecture is presented below:
+
+<img width="1256" height="661" alt="image" src="https://github.com/user-attachments/assets/95d8b1c9-8887-45b6-b70c-74c459128865" />
+
+
+
+A *.pptx file about the basics of an artificial neural network, including some symbols and math is available.
 (to be uptdated)
