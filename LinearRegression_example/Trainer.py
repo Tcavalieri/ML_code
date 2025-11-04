@@ -10,7 +10,22 @@ class Trainer:
     '''
     Class for training different ML models utilising different optimisation algorithms
     '''
-    #--------------------------------------------------------------------------------------------------------
+
+    def __init__(self,name,model_obj,eta,n_iter):
+        '''
+        parameters
+        ----------
+        name (str): name of the optimiser used
+        model_obj (obj): instance of Models class containing the ML model selected
+        eta (float): learning rate, value in between 0 and 1
+        n_iter (int): number of iterations
+        '''
+        self.name = name
+        self.model_obj = model_obj
+        self.eta = eta
+        self.n_iter = n_iter
+
+     #--------------------------------------------------------------------------------------------------------
     #Cross-Validation Method taken from Gemini; how can i work on this and adapt it myself??
     #--------------------------------------------------------------------------------------------------------
 
@@ -74,20 +89,6 @@ class Trainer:
     #End of Cross-Validation Method
     #--------------------------------------------------------------------------------------------------------
     
-
-    def __init__(self,name,model_obj,eta,n_iter):
-        '''
-        parameters
-        ----------
-        name (str): name of the optimiser used
-        model_obj (obj): instance of Models class containing the ML model selected
-        eta (float): learning rate, value in between 0 and 1
-        n_iter (int): number of iterations
-        '''
-        self.name = name
-        self.model_obj = model_obj
-        self.eta = eta
-        self.n_iter = n_iter
 
     def optim_selection(self):
         '''
