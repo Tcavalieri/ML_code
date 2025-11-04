@@ -11,12 +11,14 @@ from sklearn.model_selection import train_test_split
 from InputReader import InputReader
 import torch
 
+'''
 def get_random_state(input_file_name='Input.yml'):   
 #Retrieves the random state from the input file.
    
     inp = InputReader(input_file_name)
     inp_read = inp.yml_reader()
     return inp_read.content['random_state']
+'''
 
 def split_data(features, labels, test_size=0.2, random_state=None):
     '''
@@ -26,8 +28,8 @@ def split_data(features, labels, test_size=0.2, random_state=None):
     Parameters:
     Features (pd.DataFrame or np.array): the feature data.
     Labels (pd.DataFrame or np.array): the label data.
-    test_size (float): proportion of the dataset to include in the test split.
-    random_state (int): controls the shuffling applied to the data before applying the split.
+    test_size (float): proportion of the dataset to include in the test split, default at 0.2
+    random_state (int): controls the shuffling applied to the data before applying the split, default at None
     
     Returns:
     X_train, X_test, y_train, y_test (torch.Tensor): the split datasets as torch tensors.
