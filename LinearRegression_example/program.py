@@ -1,16 +1,17 @@
+import os
 from FeaturesExtraction import FeaturesExtraction
 from Models import LinearRegression
 from Trainer import Trainer
 import numpy as np
 import matplotlib.pyplot as plt
-import sklearn
-
-
+#import sklearn
 from InputReader import InputReader
 from Logger import Logger
 
 
 # Reading the input file (*.yml file)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+print(script_dir)
 inp = InputReader('input.yml')
 inp_read = inp.yml_reader()
 eta = inp_read.content['eta']
