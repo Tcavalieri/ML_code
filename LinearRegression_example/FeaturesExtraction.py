@@ -1,7 +1,9 @@
-#import sklearn
+import sklearn
 import pandas as pd
 import numpy as np
 import torch
+from datasplitter import split_data #import the new splitting function
+from sklearn.model_selection import KFold 
 
 class FeaturesExtraction:
     '''
@@ -68,17 +70,55 @@ class FeaturesExtraction:
         '''
         data_df = self.data_miss() # replace missing values
 
-        dim = [self.data,len(names)] # extracting dimension of the pointsxfeatures tensor
-        labels = torch.empty((dim[0],1),requires_grad=False) # initialise the labels tensor 
-        labels[:,0] = torch.tensor(data_df[label_name].values)
-        
-        features = torch.empty((dim[0],dim[1]),requires_grad=False) # initialise the pointsxfeatures tensor 
-        for i in range(dim[1]):
-            data_df[names[i]] = data_df[names[i]].apply(lambda x: float(x))
-            features[:,i] = torch.tensor(data_df[names[i]].values).double() # .double method used for compatibility of dtype
+        labels = data_df[label_name].values.astype(float).reshape(-1,1) # extraction of labels
+        features = data_df[names].values # extraction of features
+        for i, name in enumerate(names):
+            features[:,i] = data_df[name].values
+
+        features = features.astype(float)
         
         return labels, features
-
-
+    
+    def data_split(self,features,labels,test_ratio,random_state):
         
+        '''
+        function to split the data into training and testing sets.
+        Parameters
+        ----------
+        label_name (np.array or str): name of the label column in the dataframe
+        names (list): list of strings  for the features 
+        test_size (float): proportion of the dataset to include in the test split.
+        random_state (int): controls the shuffling applied to the data before applying the split.
+        Return
+        ------
+        X_train, X_test, y_train, y_test (torch.Tensor): the split datasets as torch tensors.
+        '''
 
+        #Perform the split using the new split_data function from DataSplitter.py
+        X_train_np, X_test_np, y_train_np, y_test_np = split_data(
+            features, labels, test_size=test_ratio, random_state=random_state
+        )   
+
+        #Convert NumPy arrays to PyTorch tensors
+        # 1. Training Features (always present)
+        X_train = torch.tensor(X_train_np, dtype=torch.double, requires_grad=False)
+        
+        # 2. Testing Features (check if None - occurs when test_ratio=0.0)
+        if X_test_np is None:
+            # Create an empty tensor if no test data exists
+            X_test = torch.empty((0, features.shape[1]), dtype=torch.double, requires_grad=False)
+        else:
+            X_test = torch.tensor(X_test_np, dtype=torch.double, requires_grad=False)
+        
+        # 3. Training Labels (always present)
+        y_train = torch.tensor(y_train_np, dtype=torch.double, requires_grad=False)
+        
+        # 4. Testing Labels (check if None - occurs when test_ratio=0.0)
+        if y_test_np is None:
+            # Create an empty tensor if no test data exists
+            y_test = torch.empty((0, labels.shape[1]), dtype=torch.double, requires_grad=False)
+        else:
+            y_test = torch.tensor(y_test_np, dtype=torch.double, requires_grad=False)
+        
+        return X_train, X_test, y_train, y_test
+    

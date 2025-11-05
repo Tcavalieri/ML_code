@@ -3,6 +3,8 @@ import numpy as np
 import torch
 from torch import nn
 import torch.optim as optim
+from sklearn.model_selection import KFold # <-- NEW IMPORT
+from Models import LinearRegression
 
 class Trainer:
     '''
@@ -22,6 +24,71 @@ class Trainer:
         self.model_obj = model_obj
         self.eta = eta
         self.n_iter = n_iter
+
+     #--------------------------------------------------------------------------------------------------------
+    #Cross-Validation Method taken from Gemini; how can i work on this and adapt it myself??
+    #--------------------------------------------------------------------------------------------------------
+
+    def cross_validate(self, X, y, n_splits=5): ###should this split be done outside the trainer class and instead in the input file??
+        '''
+        Method that performs K-Fold Cross-Validation
+        
+        **Parameters**
+        ----------
+        X (torch tensor): All features (full dataset).
+        y (torch tensor): All labels (full dataset).
+        n_splits (int): Number of folds for CV (default is 5).
+        
+        Returns
+        ------
+        avg_loss (float): The average loss (MSE) across all folds.
+        all_fold_losses (list): List of loss values for each fold.
+        '''
+        #KFold ensures deterministic (reproducible) splits across CV runs/folds
+        kf = KFold(n_splits=n_splits, shuffle=True, random_state=234)
+        all_fold_losses = []
+        criterion = nn.MSELoss()
+
+        #Convert PyTorch tensors to NumPy arrays for KFold to work easily
+        X_np = X.detach().numpy()
+        y_np = y.detach().numpy()
+        
+        print(f'Starting {n_splits}-Fold Cross-Validation...')
+        
+        for fold, (train_index, val_index) in enumerate(kf.split(X_np)):
+            print(f'--- Fold {fold+1}/{n_splits} ---')
+            
+            # 1. Split data for the current fold
+            X_train_fold = torch.tensor(X_np[train_index], dtype=torch.double)
+            y_train_fold = torch.tensor(y_np[train_index], dtype=torch.double)
+            X_val_fold = torch.tensor(X_np[val_index], dtype=torch.double)
+            y_val_fold = torch.tensor(y_np[val_index], dtype=torch.double)
+            
+            #2. Re-initialize model weights for a fair comparison in each fold
+            #Note: This is crucial for proper CV to avoid bias from previous folds.
+            #We rely on the model object having a 'seed' and 'X' attribute access.
+            new_model = LinearRegression(self.model_obj.name, X_train_fold, 234 + fold)
+            new_trainer = Trainer(self.name, new_model, self.eta, self.n_iter)
+            
+            #3. Train the model instance for the current fold
+            new_trainer.training(X_train_fold, y_train_fold)
+        
+            #4. Evaluate the model on the validation fold
+            with torch.no_grad():
+                output = new_model.predict(X_val_fold)
+                val_loss = criterion(output, y_val_fold).item()
+            
+            all_fold_losses.append(val_loss)
+            print(f'Validation Loss: {val_loss:.6f}')
+
+        avg_loss = np.mean(all_fold_losses)
+        print(f'\nAverage CV Loss across {n_splits} folds: {avg_loss:.6f}')
+        return avg_loss, all_fold_losses
+
+    #--------------------------------------------------------------------------------------------------------
+    #End of Cross-Validation Method
+    #--------------------------------------------------------------------------------------------------------
+    
 
     def optim_selection(self):
         '''

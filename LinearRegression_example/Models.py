@@ -36,8 +36,8 @@ class LinearRegression(Models):
         super().__init__(name) # inheriting all the Parent Class methods
         torch.manual_seed(seed) # setting the random number generator with the seed for reproducibility
 
-        self.weights = torch.rand((X.shape[1],1),requires_grad=True) # initial values of weights w
-        self.bias = torch.rand((1,1),requires_grad=True) # initial value of the coefficient b
+        self.weights = torch.rand((X.shape[1],1),requires_grad=True, dtype=torch.double) # initial values of weights w
+        self.bias = torch.rand((1,1),requires_grad=True, dtype=torch.double) # initial value of the coefficient b
         self.parameters = [self.weights,self.bias]
     
     def net_input(self,X):
