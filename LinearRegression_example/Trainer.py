@@ -3,6 +3,7 @@ import numpy as np
 import torch
 from torch import nn
 import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import KFold # <-- NEW IMPORT
 from Models import LinearRegression
 
@@ -11,7 +12,7 @@ class Trainer:
     Class for training different ML models utilising different optimisation algorithms
     '''
 
-    def __init__(self,name,model_obj,eta,n_iter):
+    def __init__(self,name,model_obj,eta,n_iter,batch_size):
         '''
         parameters
         ----------
@@ -24,6 +25,7 @@ class Trainer:
         self.model_obj = model_obj
         self.eta = eta
         self.n_iter = n_iter
+        self.batch_size = batch_size
 
      #--------------------------------------------------------------------------------------------------------
     #Cross-Validation Method taken from Gemini; how can i work on this and adapt it myself??
@@ -114,20 +116,27 @@ class Trainer:
         X (torch tensor): dim = nxm with n number of points (rows) and m number of features (columns)
         y (torch tensor): dim = nx1 with n number of labeled points
         '''
+        custom_dataset = TensorDataset(X,y)
+        train_loader = DataLoader(custom_dataset, batch_size=self.batch_size, shuffle=True)
         
-        self.losses = [] # losses array initialisation
+        self.avg_losses = [] # losses array initialisation
         criterion = nn.MSELoss() # loss function Mean Square Error
 
         self.optim_selection()
         # training routine
         for i in range(self.n_iter):
-
-            output = self.model_obj.net_input(X) 
-            loss = criterion(output,y)
-            self.optimiser.zero_grad() # zeroing gradients
-            loss.backward() # calculate gradients
-            self.optimiser.step() # updating parameters
-            self.losses.append(loss.item())
+            running_loss = 0.0
+            for batch_idx, (inputs, labels) in enumerate(train_loader):
+                self.optimiser.zero_grad() # zeroing gradients
+                output = self.model_obj.net_input(inputs) 
+                loss = criterion(output,labels)
+                loss.backward() # calculate gradients
+                self.optimiser.step() # updating parameters
+                running_loss += loss.item()
+            avg_loss = running_loss / len(train_loader)
+            self.avg_losses.append(avg_loss)
+            print(f"Iter [{i+1}/{self.n_iter}], Loss: {avg_loss:.4f}")
+        print("Training complete.")
         return self
     
     def gd_optim(self,X,y):
@@ -154,4 +163,5 @@ class Trainer:
             self.losses.append(loss)
 
         return self
+
 

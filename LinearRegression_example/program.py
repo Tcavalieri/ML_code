@@ -10,8 +10,8 @@ from Logger import Logger
 
 
 # Reading the input file (*.yml file)
-script_dir = os.path.dirname(os.path.abspath(__file__))
-print(script_dir)
+# script_dir = os.path.dirname(os.path.abspath(__file__))
+# print(script_dir)
 inp = InputReader('input.yml')
 inp_read = inp.yml_reader()
 eta = inp_read.content['eta']
@@ -43,8 +43,8 @@ lr_model1 = LinearRegression(inp_read.content['model'], X_train, random_state) #
 lr_model2 = LinearRegression(inp_read.content['model'],X_train, random_state) # other instance only for demonstartion purposes
 
 # Training
-trainer1 = Trainer(inp_read.content['trainer'],lr_model1,inp_read.content['eta'],inp_read.content['n_iter']) # instance of training class
-trainer2 = Trainer('GD_Custom',lr_model2,inp_read.content['eta'],inp_read.content['n_iter'])
+trainer1 = Trainer(inp_read.content['trainer'],lr_model1,inp_read.content['eta'],inp_read.content['n_iter'],inp_read.content['batch_size']) # instance of training class
+# trainer2 = Trainer('GD_Custom',lr_model2,inp_read.content['eta'],inp_read.content['n_iter'])
 
 # --- START CROSS-VALIDATION ---
 print("\n*** Starting Cross-Validation for SGD Model Performance Estimate ***")
@@ -60,7 +60,7 @@ log = Logger(lr_model1,trainer1)
 log.log('w')
 
 train1 = trainer1.training(X_train, y_train) # stochastic gradient descent training
-train2 = trainer2.gd_optim(X_train, y_train) # gradient descent training
+# train2 = trainer2.gd_optim(X_train, y_train) # gradient descent training
 
 # Second part of the log file
 log = Logger(lr_model1, trainer1)
@@ -70,16 +70,16 @@ log.log('a')
 fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 4))
 
 #Plot SDG Loss, using results from the train1
-ax[0].plot(range(1, len(train1.losses) + 1), np.log10(train1.losses), marker='o')
+ax[0].plot(range(1, len(train1.avg_losses) + 1), np.log10(train1.avg_losses), marker='o')
 ax[0].set_xlabel('Number of iter')
 ax[0].set_ylabel('log(Mean squared error)')
 ax[0].set_title(f'Stocastic gradient descent')
 
 #Plot GD Loss, using results from train2
-ax[1].plot(range(1, len(train2.losses) + 1), np.log10(train2.losses), marker='o')
+ax[1].plot(range(1, len(train1.avg_losses) + 1), np.log10(train1.avg_losses), marker='o')
 ax[1].set_xlabel('Number of iter')
 ax[1].set_ylabel('log(Mean squared error)')
-ax[1].set_title(f'gradient descent')
+ax[1].set_title(f'Stocastic gradient descent')
 plt.show()
 
 # prediction of the model trained with a "good" learning rate
@@ -141,5 +141,6 @@ ax[1].set_ylabel('log(Mean squared error)')
 ax[1].set_title(f'gradient descent')
 plt.show()
 '''
+
 
 
